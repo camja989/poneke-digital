@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pōneke Digital — Wellington Government Technology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #0f1a14;
+      --leaf:      #1a3d2b;
+      --fern:      #2d6a4f;
+      --moss:      #52b788;
+      --mist:      #f0f4f1;
+      --white:     #fafcfb;
+      --gold:      #c9a84c;
+      --serif:     'DM Serif Display', Georgia, serif;
+      --sans:      'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--white);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 4vw;
+      background: rgba(250,252,251,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(42,106,79,0.12);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 2px 24px rgba(15,26,20,0.08); }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      color: var(--leaf);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .nav-logo span { color: var(--moss); }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    .nav-cta {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--white);
+      background: var(--leaf);
+      padding: 0.55rem 1.3rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--fern); }
+
+    /* ── HERO ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 4vw;
+      gap: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 70% 40%, rgba(82,183,136,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 20% 70%, rgba(42,106,79,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Decorative Te Ao lines */
+    .hero-deco {
+      position: absolute;
+      top: 0; right: 0;
+      width: 45vw;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.04;
+    }
+
+    .hero-content {
+      padding-top: 5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fern);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.1s forwards;
+    }
+    .hero-kicker::before {
+      content: '';
+      width: 28px; height: 1px;
+      background: var(--moss);
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.25s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--fern);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--ink);
+      opacity: 0;
+      max-width: 480px;
+      animation: fadeUp 0.7s 0.4s forwards;
+    }
+    .hero-sub-inner { opacity: 0.65; }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.55s forwards;
+    }
+
+    .btn-primary {
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--white);
+      background: var(--leaf);
+      padding: 0.8rem 1.8rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--fern); transform: translateY(-1px); }
+
+    .btn-ghost {
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--leaf);
+      background: transparent;
+      padding: 0.8rem 1.8rem;
+      border-radius: 4px;
+      text-decoration: none;
+      border: 1.5px solid rgba(42,106,79,0.3);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--fern); color: var(--fern); }
+
+    /* Hero visual panel */
+    .hero-visual {
+      padding-top: 5rem;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeIn 1s 0.6s forwards;
+    }
+
+    .card-stack {
+      position: relative;
+      height: 420px;
+    }
+
+    .stat-card {
+      position: absolute;
+      background: var(--white);
+      border: 1px solid rgba(42,106,79,0.12);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 32px rgba(15,26,20,0.07);
+    }
+
+    .stat-card.main {
+      top: 0; left: 0; right: 0;
+      background: var(--leaf);
+      color: var(--white);
+      padding: 2rem;
+    }
+
+    .stat-card.main .card-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card.main .card-title {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+    }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.3rem 0.7rem;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+    }
+    .tag.gold { background: var(--gold); color: var(--ink); }
+
+    .stat-card.floating-1 {
+      top: 220px; left: 20px;
+      width: 170px;
+      animation: float 4s ease-in-out infinite;
+    }
+    .stat-card.floating-2 {
+      top: 240px; right: 20px;
+      width: 185px;
+      animation: float 4s ease-in-out 1.5s infinite;
+    }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 2rem;
+      color: var(--leaf);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      opacity: 0.55;
+      margin-top: 0.3rem;
+    }
+
+    /* ── TICKER ──────────────────────────────────────── */
+    .ticker {
+      background: var(--leaf);
+      color: rgba(255,255,255,0.75);
+      padding: 0.65rem 0;
+      overflow: hidden;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .ticker-inner {
+      display: inline-flex;
+      gap: 3rem;
+      animation: ticker 25s linear infinite;
+    }
+    .ticker-inner span { opacity: 0.7; }
+    .ticker-inner strong { color: var(--moss); font-weight: 500; opacity: 1; }
+
+    /* ── SERVICES ────────────────────────────────────── */
+    section { padding: 6rem 4vw; }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--moss);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 540px;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--ink);
+      opacity: 0.6;
+      max-width: 500px;
+      margin-bottom: 3.5rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: rgba(42,106,79,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .service-item {
+      background: var(--white);
+      padding: 2rem;
+      transition: background 0.2s;
+      cursor: default;
+    }
+    .service-item:hover { background: var(--mist); }
+
+    .service-icon {
+      width: 40px; height: 40px;
+      background: var(--mist);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .service-name {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      color: var(--leaf);
+      margin-bottom: 0.5rem;
+    }
+
+    .service-desc {
+      font-size: 0.875rem;
+      line-height: 1.65;
+      opacity: 0.6;
+    }
+
+    /* ── WHY NZ ──────────────────────────────────────── */
+    .why-section {
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .why-section .section-title { color: var(--white); max-width: 440px; }
+    .why-section .section-sub { color: rgba(255,255,255,0.55); }
+
+    .why-list { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .why-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.5s, transform 0.5s;
+    }
+    .why-item.visible { opacity: 1; transform: translateX(0); }
+
+    .why-num {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      color: var(--moss);
+      line-height: 1;
+      min-width: 2rem;
+    }
+
+    .why-text strong {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+    .why-text p {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      opacity: 0.55;
+    }
+
+    /* ── STACK ───────────────────────────────────────── */
+    .stack-section { background: var(--mist); }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(42,106,79,0.12);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .stack-item {
+      background: var(--white);
+      padding: 1.5rem;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .stack-item:hover { background: var(--mist); }
+
+    .stack-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+    .stack-name { font-size: 0.8rem; font-weight: 500; opacity: 0.7; }
+
+    /* ── CTA ─────────────────────────────────────────── */
+    .cta-section {
+      text-align: center;
+      background: var(--leaf);
+      color: var(--white);
+      padding: 6rem 4vw;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: 'Pōneke';
+      font-family: var(--serif);
+      font-size: 20vw;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.04;
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: -0.04em;
+    }
+
+    .cta-section .section-title {
+      color: var(--white);
+      max-width: 600px;
+      margin: 0 auto 1rem;
+    }
+
+    .cta-section .section-sub {
+      color: rgba(255,255,255,0.6);
+      margin: 0 auto 2.5rem;
+      max-width: 480px;
+    }
+
+    .cta-email {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 1.5rem;
+    }
+    .cta-email a { color: var(--moss); text-decoration: none; }
+    .cta-email a:hover { text-decoration: underline; }
+
+    .btn-light {
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--leaf);
+      background: var(--white);
+      padding: 0.9rem 2.2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: inline-block;
+    }
+    .btn-light:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.4);
+      padding: 2.5rem 4vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    footer a {
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--moss); }
+
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── ANIMATIONS ──────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 7rem; }
+      .hero-visual { display: none; }
+      .services-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .stack-grid { grid-template-columns: repeat(2, 1fr); }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">Pō<span>neke</span> Digital</a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#why">About</a></li>
+      <li><a href="#stack">Stack</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Get in touch</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <svg class="hero-deco" viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 400 Q300 0 600 400 Q300 800 0 400Z" stroke="#2d6a4f" stroke-width="1" fill="none"/>
+      <path d="M50 400 Q300 50 550 400 Q300 750 50 400Z" stroke="#2d6a4f" stroke-width="1" fill="none"/>
+      <path d="M100 400 Q300 100 500 400 Q300 700 100 400Z" stroke="#2d6a4f" stroke-width="1" fill="none"/>
+      <path d="M150 400 Q300 150 450 400 Q300 650 150 400Z" stroke="#2d6a4f" stroke-width="1" fill="none"/>
+    </svg>
+
+    <div class="hero-content">
+      <div class="hero-kicker">Wellington, Aotearoa</div>
+      <h1 class="hero-title">
+        Government<br />
+        technology,<br />
+        <em>built here.</em>
+      </h1>
+      <p class="hero-sub">
+        <span class="hero-sub-inner">Pōneke Digital builds open-source web systems, data platforms, and digital tools for New Zealand government agencies and public sector organisations.</span>
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Start a conversation</a>
+        <a href="#services" class="btn-ghost">Our services</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="card-stack">
+        <div class="stat-card main">
+          <div class="card-label">Current Focus</div>
+          <div class="card-title">Open-source implementations for NZ public sector</div>
+          <div class="tag-row">
+            <span class="tag gold">Django</span>
+            <span class="tag">Python</span>
+            <span class="tag">Koha LMS</span>
+            <span class="tag">NZISM</span>
+            <span class="tag">M365</span>
+          </div>
+        </div>
+        <div class="stat-card floating-1">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">NZ owned & operated</div>
+        </div>
+        <div class="stat-card floating-2">
+          <div class="stat-num">Wellington</div>
+          <div class="stat-label">Based on Te Whanganui-a-Tara</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-inner">
+      <span>Django &amp; Python</span>
+      <strong>·</strong>
+      <span>Open Source First</span>
+      <strong>·</strong>
+      <span>NZ Data Sovereignty</span>
+      <strong>·</strong>
+      <span>NZISM Compliant</span>
+      <strong>·</strong>
+      <span>Wellington Based</span>
+      <strong>·</strong>
+      <span>Government Procurement</span>
+      <strong>·</strong>
+      <span>Koha LMS</span>
+      <strong>·</strong>
+      <span>Te Reo Māori Support</span>
+      <strong>·</strong>
+      <!-- duplicate for seamless loop -->
+      <span>Django &amp; Python</span>
+      <strong>·</strong>
+      <span>Open Source First</span>
+      <strong>·</strong>
+      <span>NZ Data Sovereignty</span>
+      <strong>·</strong>
+      <span>NZISM Compliant</span>
+      <strong>·</strong>
+      <span>Wellington Based</span>
+      <strong>·</strong>
+      <span>Government Procurement</span>
+      <strong>·</strong>
+      <span>Koha LMS</span>
+      <strong>·</strong>
+      <span>Te Reo Māori Support</span>
+      <strong>·</strong>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="reveal">
+      <div class="section-label">What we do</div>
+      <h2 class="section-title">Built for the NZ public sector</h2>
+      <p class="section-sub">We specialise in open-source technology that gives government agencies control over their data, their systems, and their future.</p>
+    </div>
+
+    <div class="services-grid reveal">
+      <div class="service-item">
+        <div class="service-icon">🏛️</div>
+        <div class="service-name">Government Portals</div>
+        <p class="service-desc">Django-powered web applications and portals built to NZISM standards, with full Microsoft 365 and Entra ID integration.</p>
+      </div>
+      <div class="service-item">
+        <div class="service-icon">📚</div>
+        <div class="service-name">Koha LMS Implementation</div>
+        <p class="service-desc">NZ-based implementation, migration, and support for Koha — the open-source library management system born in Aotearoa.</p>
+      </div>
+      <div class="service-item">
+        <div class="service-icon">📊</div>
+        <div class="service-name">Data Dashboards</div>
+        <p class="service-desc">Actionable analytics and reporting platforms built on open standards, integrated with your existing systems and data warehouse.</p>
+      </div>
+      <div class="service-item">
+        <div class="service-icon">🤖</div>
+        <div class="service-name">AI &amp; Automation Tools</div>
+        <p class="service-desc">Practical AI tools for government — document redaction, workflow automation, and intelligent data processing. No hype, just utility.</p>
+      </div>
+      <div class="service-item">
+        <div class="service-icon">🔗</div>
+        <div class="service-name">System Integration</div>
+        <p class="service-desc">REST API development and integration services connecting your legacy systems with modern cloud platforms including SAP and M365.</p>
+      </div>
+      <div class="service-item">
+        <div class="service-icon">🛡️</div>
+        <div class="service-name">Compliance &amp; Security</div>
+        <p class="service-desc">Systems designed to NZISM, PSR, and Privacy Act 2020 standards from day one — not retrofitted as an afterthought.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section id="why" class="why-section">
+    <div class="why-grid">
+      <div class="reveal">
+        <div class="section-label" style="color: var(--moss)">Why Pōneke Digital</div>
+        <h2 class="section-title">The NZ government deserves NZ technology partners</h2>
+        <p class="section-sub">Most government technology decisions are made by offshore vendors who understand neither te Tiriti obligations nor the realities of NZ procurement. We do.</p>
+      </div>
+
+      <ul class="why-list">
+        <li class="why-item">
+          <div class="why-num">01</div>
+          <div class="why-text">
+            <strong>Wellington timezone. Wellington relationships.</strong>
+            <p>We're on Te Whanganui-a-Tara. We attend the same meetings, understand the same constraints, and are reachable when things go wrong — not 12 hours later.</p>
+          </div>
+        </li>
+        <li class="why-item">
+          <div class="why-num">02</div>
+          <div class="why-text">
+            <strong>Open source reduces your long-term risk.</strong>
+            <p>No vendor lock-in. No licence fees that balloon as your organisation grows. Your data is yours, your systems are auditable, and you can always change partners.</p>
+          </div>
+        </li>
+        <li class="why-item">
+          <div class="why-num">03</div>
+          <div class="why-text">
+            <strong>Te reo Māori and te Tiriti by design.</strong>
+            <p>Macron support, bilingual interfaces, and hauora Māori frameworks built in from the start — not added as a checkbox before go-live.</p>
+          </div>
+        </li>
+        <li class="why-item">
+          <div class="why-num">04</div>
+          <div class="why-text">
+            <strong>Economic benefit to New Zealand.</strong>
+            <p>Every dollar spent with Pōneke Digital stays in the NZ economy. We score well on government procurement economic benefit criteria because we genuinely deliver it.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack" class="stack-section">
+    <div class="reveal" style="text-align:center; margin-bottom: 3rem;">
+      <div class="section-label" style="justify-content:center; display:flex;">Our stack</div>
+      <h2 class="section-title" style="margin: 0 auto 1rem; text-align:center;">Proven, open, and government-ready</h2>
+      <p class="section-sub" style="margin: 0 auto; text-align:center;">We build on technologies trusted by governments worldwide — with no proprietary lock-in and full NZ data sovereignty.</p>
+    </div>
+
+    <div class="stack-grid reveal">
+      <div class="stack-item"><div class="stack-icon">🐍</div><div class="stack-name">Python / Django</div></div>
+      <div class="stack-item"><div class="stack-icon">🐘</div><div class="stack-name">PostgreSQL</div></div>
+      <div class="stack-item"><div class="stack-icon">☁️</div><div class="stack-name">AWS ap-southeast-2</div></div>
+      <div class="stack-item"><div class="stack-icon">🔐</div><div class="stack-name">Azure Entra ID</div></div>
+      <div class="stack-item"><div class="stack-icon">📋</div><div class="stack-name">Koha LMS</div></div>
+      <div class="stack-item"><div class="stack-icon">🟦</div><div class="stack-name">Microsoft 365</div></div>
+      <div class="stack-item"><div class="stack-icon">🚀</div><div class="stack-name">Next.js / Tailwind</div></div>
+      <div class="stack-item"><div class="stack-icon">🔧</div><div class="stack-name">Terraform / IaC</div></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="contact" class="cta-section">
+    <div class="reveal">
+      <div class="section-label" style="color: var(--moss); justify-content:center; display:flex;">Get in touch</div>
+      <h2 class="section-title">Ready to build something that lasts?</h2>
+      <p class="section-sub">Whether you have a tender to respond to, a system to replace, or just want to understand what open-source technology can do for your agency — we'd like to talk.</p>
+      <a href="mailto:info@ponekedigital.co.nz" class="btn-light">Send us a message</a>
+      <p class="cta-email">Or email us directly at <a href="mailto:info@ponekedigital.co.nz">info@ponekedigital.co.nz</a></p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Pōneke Digital Ltd</div>
+    <div>Wellington, Aotearoa New Zealand</div>
+    <div>
+      <a href="mailto:info@ponekedigital.co.nz">info@ponekedigital.co.nz</a>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const whyItems = document.querySelectorAll('.why-item');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // Why items staggered
+    const whyObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 120);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    whyItems.forEach(el => whyObserver.observe(el));
+  </script>
+</body>
+</html>
