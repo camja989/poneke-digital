@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio — Pōneke Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:   #0f1a14;
+      --leaf:  #1a3d2b;
+      --fern:  #2d6a4f;
+      --moss:  #52b788;
+      --mist:  #f0f4f1;
+      --white: #fafcfb;
+      --gold:  #c9a84c;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--white); color: var(--ink); overflow-x: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 4vw;
+      background: rgba(250,252,251,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(42,106,79,0.12);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 2px 24px rgba(15,26,20,0.08); }
+    .nav-logo { font-family: var(--serif); font-size: 1.25rem; color: var(--leaf); text-decoration: none; letter-spacing: -0.01em; }
+    .nav-logo span { color: var(--moss); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--ink); text-decoration: none; opacity: 0.65; transition: opacity 0.2s; }
+    .nav-links a:hover, .nav-links a.active { opacity: 1; }
+    .nav-cta { font-size: 0.875rem; font-weight: 500; color: var(--white); background: var(--leaf); padding: 0.55rem 1.3rem; border-radius: 4px; text-decoration: none; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--fern); }
+
+    /* ── PORTFOLIO HERO ── */
+    .portfolio-hero {
+      padding: 8rem 4vw 4rem;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .portfolio-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 70% at 80% 50%, rgba(82,183,136,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .portfolio-hero-content { position: relative; z-index: 1; max-width: 680px; }
+
+    .portfolio-kicker { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--moss); margin-bottom: 1.25rem; }
+    .portfolio-kicker::before { content: ''; width: 28px; height: 1px; background: var(--moss); }
+
+    .portfolio-title { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.5rem); line-height: 1.08; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1rem; }
+    .portfolio-title em { font-style: italic; color: var(--fern); }
+    .portfolio-sub { font-size: 1rem; line-height: 1.7; color: var(--ink); opacity: 0.6; max-width: 520px; }
+
+    /* ── PROJECTS GRID ── */
+    .projects-section { padding: 3rem 4vw 6rem; }
+    .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; max-width: 1100px; }
+
+    .project-card { background: var(--white); border: 1px solid rgba(42,106,79,0.1); border-radius: 16px; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; display: flex; flex-direction: column; }
+    .project-card:hover { box-shadow: 0 12px 48px rgba(15,26,20,0.1); transform: translateY(-3px); }
+
+    /* Browser mockup */
+    .project-preview { position: relative; height: 220px; overflow: hidden; }
+    .browser-bar { position: absolute; top: 0; left: 0; right: 0; height: 36px; background: #f0f0f0; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; padding: 0 14px; gap: 6px; z-index: 2; }
+    .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .browser-dot:nth-child(1) { background: #ff5f57; }
+    .browser-dot:nth-child(2) { background: #febc2e; }
+    .browser-dot:nth-child(3) { background: #28c840; }
+    .browser-url { margin-left: 0.5rem; background: rgba(0,0,0,0.07); border-radius: 4px; padding: 0.2rem 0.75rem; font-size: 0.7rem; color: rgba(0,0,0,0.45); font-family: 'SF Mono', monospace; flex: 1; max-width: 240px; }
+
+    .project-preview-bg { position: absolute; inset: 0; top: 36px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .project-preview-bg::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 80% at 50% 0%, rgba(255,255,255,0.12) 0%, transparent 60%); }
+    .project-monogram { font-family: var(--serif); font-size: 7rem; color: rgba(255,255,255,0.1); line-height: 1; user-select: none; letter-spacing: -0.04em; position: relative; z-index: 1; }
+    .project-domain-pill { position: absolute; bottom: 1rem; left: 1rem; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); color: rgba(255,255,255,0.9); padding: 0.3rem 0.8rem; border-radius: 100px; font-size: 0.72rem; font-family: 'SF Mono', monospace; z-index: 2; }
+
+    /* Card body */
+    .project-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .project-category { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--moss); margin-bottom: 0.5rem; }
+    .project-name { font-family: var(--serif); font-size: 1.4rem; color: var(--ink); margin-bottom: 0.6rem; line-height: 1.2; }
+    .project-desc { font-size: 0.875rem; line-height: 1.65; color: var(--ink); opacity: 0.6; flex: 1; margin-bottom: 1.25rem; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+    .project-tag { font-size: 0.7rem; font-weight: 500; padding: 0.25rem 0.65rem; border-radius: 100px; background: var(--mist); color: var(--fern); border: 1px solid rgba(42,106,79,0.12); }
+    .project-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 500; color: var(--leaf); text-decoration: none; transition: color 0.2s, gap 0.2s; align-self: flex-start; }
+    .project-link:hover { color: var(--fern); gap: 0.65rem; }
+
+    /* ── CTA STRIP ── */
+    .portfolio-cta { background: var(--mist); border-top: 1px solid rgba(42,106,79,0.1); padding: 4rem 4vw; text-align: center; }
+    .portfolio-cta-title { font-family: var(--serif); font-size: clamp(1.6rem, 2.5vw, 2.2rem); color: var(--ink); margin-bottom: 0.75rem; }
+    .portfolio-cta-sub { font-size: 0.95rem; color: var(--ink); opacity: 0.55; max-width: 480px; margin: 0 auto 1.75rem; line-height: 1.6; }
+    .btn-primary { font-family: var(--sans); font-size: 0.9rem; font-weight: 500; color: var(--white); background: var(--leaf); padding: 0.8rem 1.8rem; border-radius: 4px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+    .btn-primary:hover { background: var(--fern); transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--ink); color: rgba(255,255,255,0.4); padding: 2.5rem 4vw; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+    footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+    footer a:hover { color: var(--moss); }
+    .footer-logo { font-family: var(--serif); font-size: 1.05rem; color: rgba(255,255,255,0.7); }
+
+    /* ── ANIMATIONS ── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .projects-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">Pō<span>neke</span> Digital</a>
+    <ul class="nav-links">
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="index.html#why">About</a></li>
+      <li><a href="index.html#stack">Stack</a></li>
+      <li><a href="portfolio.html" class="active">Portfolio</a></li>
+    </ul>
+    <a href="index.html#contact" class="nav-cta">Get in touch</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="portfolio-hero">
+    <div class="portfolio-hero-content">
+      <div class="portfolio-kicker">Our work</div>
+      <h1 class="portfolio-title">Real sites,<br /><em>live in production.</em></h1>
+      <p class="portfolio-sub">
+        Every project is built from scratch — no page builders, no templates.
+        Real backends, real databases, built for the people using them.
+      </p>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="projects-section">
+    <div class="projects-grid">
+
+      <!-- Aiga Rise -->
+      <article class="project-card reveal">
+        <div class="project-preview">
+          <div class="browser-bar">
+            <div class="browser-dot"></div>
+            <div class="browser-dot"></div>
+            <div class="browser-dot"></div>
+            <div class="browser-url">aigarise.co.nz</div>
+          </div>
+          <div class="project-preview-bg" style="background: #1a3d2b;">
+            <div class="project-monogram">A</div>
+            <div class="project-domain-pill">aigarise.co.nz</div>
+          </div>
+        </div>
+        <div class="project-body">
+          <div class="project-category">Community Platform</div>
+          <h2 class="project-name">Aiga Rise</h2>
+          <p class="project-desc">A platform connecting Pacific families across Aotearoa — built with Django for accessibility, warmth, and community.</p>
+          <div class="project-tags">
+            <span class="project-tag">Django</span>
+            <span class="project-tag">Python</span>
+            <span class="project-tag">PostgreSQL</span>
+            <span class="project-tag">DigitalOcean</span>
+          </div>
+          <a href="https://aigarise.co.nz" class="project-link" target="_blank" rel="noopener noreferrer">Visit aigarise.co.nz →</a>
+        </div>
+      </article>
+
+      <!-- Choppa Lawn NZ -->
+      <article class="project-card reveal">
+        <div class="project-preview">
+          <div class="browser-bar">
+            <div class="browser-dot"></div>
+            <div class="browser-dot"></div>
+            <div class="browser-dot"></div>
+            <div class="browser-url">choppalawnz.co.nz</div>
+          </div>
+          <div class="project-preview-bg" style="background: #2d6a4f;">
+            <div class="project-monogram">C</div>
+            <div class="project-domain-pill">choppalawnz.co.nz</div>
+          </div>
+        </div>
+        <div class="project-body">
+          <div class="project-category">Business Website</div>
+          <h2 class="project-name">Choppa Lawn NZ</h2>
+          <p class="project-desc">Booking and enquiry platform for a Wellington lawn care business — fast, mobile-first, and dead simple for customers to use.</p>
+          <div class="project-tags">
+            <span class="project-tag">Django</span>
+            <span class="project-tag">Python</span>
+            <span class="project-tag">SQLite</span>
+            <span class="project-tag">WhiteNoise</span>
+          </div>
+          <a href="https://choppalawnz.co.nz" class="project-link" target="_blank" rel="noopener noreferrer">Visit choppalawnz.co.nz →</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="portfolio-cta">
+    <h2 class="portfolio-cta-title">Want your project here?</h2>
+    <p class="portfolio-cta-sub">We build websites and web apps for Wellington businesses and NZ organisations. Let's have a conversation about what you need.</p>
+    <a href="mailto:info@ponekedigital.co.nz" class="btn-primary">Get in touch →</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Pōneke Digital Ltd</div>
+    <div>Wellington, Aotearoa New Zealand</div>
+    <div><a href="mailto:info@ponekedigital.co.nz">info@ponekedigital.co.nz</a></div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
