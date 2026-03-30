@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Pōneke Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:   #0f1a14;
+      --leaf:  #1a3d2b;
+      --fern:  #2d6a4f;
+      --moss:  #52b788;
+      --mist:  #f0f4f1;
+      --white: #fafcfb;
+      --gold:  #c9a84c;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--white); color: var(--ink); overflow-x: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 4vw;
+      background: rgba(250,252,251,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(42,106,79,0.12);
+      box-shadow: 0 2px 24px rgba(15,26,20,0.08);
+    }
+
+    .nav-logo { font-family: var(--serif); font-size: 1.25rem; color: var(--leaf); text-decoration: none; letter-spacing: -0.01em; }
+    .nav-logo span { color: var(--moss); }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--ink); text-decoration: none; opacity: 0.65; transition: opacity 0.2s; }
+    .nav-links a:hover { opacity: 1; }
+
+    .nav-cta { font-size: 0.875rem; font-weight: 500; color: var(--white); background: var(--leaf); padding: 0.55rem 1.3rem; border-radius: 4px; text-decoration: none; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--fern); }
+
+    /* ── PAGE LAYOUT ── */
+    .page-wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 72px;
+    }
+
+    /* ── LEFT PANEL ── */
+    .contact-left {
+      background: var(--leaf);
+      color: var(--white);
+      padding: 5rem 5vw 4rem;
+      position: sticky;
+      top: 72px;
+      height: calc(100vh - 72px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .contact-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 120% 30%, rgba(82,183,136,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at -10% 80%, rgba(201,168,76,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .contact-left-inner { position: relative; z-index: 1; }
+
+    .contact-kicker {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--moss);
+      margin-bottom: 1.5rem;
+    }
+    .contact-kicker::before { content: ''; width: 28px; height: 1px; background: var(--moss); }
+
+    .contact-left h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 1.25rem;
+    }
+    .contact-left h1 em { font-style: italic; color: var(--moss); }
+
+    .contact-left p {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.6);
+      max-width: 380px;
+      margin-bottom: 3rem;
+    }
+
+    .contact-details { display: flex; flex-direction: column; gap: 1rem; }
+
+    .contact-detail {
+      display: flex; align-items: flex-start; gap: 0.9rem;
+    }
+
+    .detail-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+
+    .detail-text strong { display: block; font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.15rem; }
+    .detail-text a, .detail-text span { font-size: 0.9rem; color: var(--white); text-decoration: none; }
+    .detail-text a:hover { color: var(--moss); }
+
+    .left-deco {
+      position: absolute; bottom: -60px; right: -60px;
+      width: 300px; height: 300px; border-radius: 50%;
+      border: 1px solid rgba(82,183,136,0.15);
+      pointer-events: none;
+    }
+    .left-deco::after {
+      content: ''; position: absolute; inset: 30px; border-radius: 50%;
+      border: 1px solid rgba(82,183,136,0.1);
+    }
+
+    /* ── RIGHT PANEL / FORM ── */
+    .contact-right {
+      padding: 5rem 5vw 4rem;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-heading {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-subheading {
+      font-size: 0.875rem;
+      color: var(--ink);
+      opacity: 0.5;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    /* ── FORM STYLES ── */
+    .contact-form { display: flex; flex-direction: column; gap: 1.4rem; max-width: 520px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+
+    .field { display: flex; flex-direction: column; gap: 0.45rem; }
+
+    .field label {
+      font-size: 0.78rem; font-weight: 500;
+      color: var(--ink); opacity: 0.7;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .field label .optional { font-weight: 400; opacity: 0.5; text-transform: none; letter-spacing: 0; font-style: italic; }
+
+    .field input,
+    .field select,
+    .field textarea {
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      color: var(--ink);
+      background: var(--white);
+      border: 1.5px solid rgba(42,106,79,0.2);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--ink); opacity: 0.3; }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--fern);
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.09);
+    }
+
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231a3d2b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.9rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+
+    .field textarea { resize: vertical; min-height: 130px; line-height: 1.65; }
+
+    .form-submit-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 0.4rem;
+      flex-wrap: wrap; gap: 1rem;
+    }
+
+    .form-note { font-size: 0.78rem; color: var(--ink); opacity: 0.4; line-height: 1.5; max-width: 220px; }
+
+    .btn-submit {
+      font-family: var(--sans);
+      font-size: 0.9rem; font-weight: 500;
+      color: var(--white); background: var(--leaf);
+      padding: 0.85rem 2rem;
+      border: none; border-radius: 4px; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .btn-submit:hover { background: var(--fern); transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+
+    /* ── SUCCESS STATE ── */
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+    .success-message.visible { display: block; }
+    .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .success-message h3 { font-family: var(--serif); font-size: 1.8rem; color: var(--leaf); margin-bottom: 0.75rem; }
+    .success-message p { font-size: 0.95rem; color: var(--ink); opacity: 0.6; line-height: 1.7; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--ink); color: rgba(255,255,255,0.4); padding: 2.5rem 4vw; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+    footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+    footer a:hover { color: var(--moss); }
+    .footer-logo { font-family: var(--serif); font-size: 1.05rem; color: rgba(255,255,255,0.7); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .contact-left {
+        position: static;
+        height: auto;
+        padding: 4rem 6vw 3rem;
+      }
+      .contact-right { padding: 3rem 6vw 4rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .form-submit-row { flex-direction: column; align-items: stretch; }
+      .form-note { max-width: 100%; }
+      .btn-submit { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Pō<span>neke</span> Digital</a>
+    <ul class="nav-links">
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="index.html#why">About</a></li>
+      <li><a href="index.html#stack">Stack</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta" aria-current="page">Get in touch</a>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- LEFT: Info panel -->
+    <div class="contact-left">
+      <div class="contact-left-inner">
+        <div class="contact-kicker">Start a conversation</div>
+        <h1>Let's build something <em>worth building.</em></h1>
+        <p>Tell us about your project and we'll get back to you within one business day. No obligation — just a straight conversation about what you need.</p>
+
+        <div class="contact-details">
+          <div class="contact-detail">
+            <div class="detail-icon">📍</div>
+            <div class="detail-text">
+              <strong>Based in</strong>
+              <span>Wellington, Aotearoa New Zealand</span>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="detail-icon">📧</div>
+            <div class="detail-text">
+              <strong>Email</strong>
+              <a href="mailto:info@ponekedigital.co.nz">info@ponekedigital.co.nz</a>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="detail-icon">⏱️</div>
+            <div class="detail-text">
+              <strong>Response time</strong>
+              <span>Within one business day</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="left-deco"></div>
+    </div>
+
+    <!-- RIGHT: Form -->
+    <div class="contact-right">
+      <div id="form-area">
+        <h2 class="form-heading">Tell us about your project</h2>
+        <p class="form-subheading">Fill in the form below and we'll be in touch shortly.</p>
+
+        <form
+          class="contact-form"
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          id="contact-form"
+        >
+          <!-- Netlify hidden fields -->
+          <input type="hidden" name="form-name" value="contact" />
+          <p style="display:none;"><label>Don't fill this out: <input name="bot-field" /></label></p>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="name">Full name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Jane Smith"
+                required
+                autocomplete="name"
+              />
+            </div>
+            <div class="field">
+              <label for="email">Email address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="jane@example.co.nz"
+                required
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="organisation">Organisation <span class="optional">(optional)</span></label>
+            <input
+              type="text"
+              id="organisation"
+              name="organisation"
+              placeholder="Your business or agency"
+              autocomplete="organization"
+            />
+          </div>
+
+          <div class="field">
+            <label for="project-type">Type of project</label>
+            <select id="project-type" name="project-type" required>
+              <option value="" disabled selected>Select a category…</option>
+              <option value="Custom Web Application">Custom Web Application</option>
+              <option value="Marketing or Brochure Website">Marketing or Brochure Website</option>
+              <option value="Government / Public Sector">Government / Public Sector</option>
+              <option value="Data & Reporting Platform">Data &amp; Reporting Platform</option>
+              <option value="API Development or Integration">API Development or Integration</option>
+              <option value="SaaS or E-commerce">SaaS or E-commerce</option>
+              <option value="Google Ads Management">Google Ads Management</option>
+              <option value="Other / Not Sure">Other / Not Sure</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="budget">Approximate budget <span class="optional">(optional)</span></label>
+            <select id="budget" name="budget">
+              <option value="" disabled selected>Select a range…</option>
+              <option value="Under $5k">Under $5,000</option>
+              <option value="$5k – $15k">$5,000 – $15,000</option>
+              <option value="$15k – $50k">$15,000 – $50,000</option>
+              <option value="$50k+">$50,000+</option>
+              <option value="Not sure yet">Not sure yet</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="message">Tell us about your project</label>
+            <textarea
+              id="message"
+              name="message"
+              placeholder="What are you trying to build or solve? Any deadlines, existing systems, or constraints we should know about?"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-submit-row">
+            <p class="form-note">We'll respond within one business day — no spam, no sales calls.</p>
+            <button type="submit" class="btn-submit">Send message →</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="success-message" id="success-message">
+        <div class="success-icon">✅</div>
+        <h3>Message received.</h3>
+        <p>Thanks for reaching out — we'll be in touch within one business day.<br />In the meantime, feel free to email us at <a href="mailto:info@ponekedigital.co.nz" style="color: var(--fern);">info@ponekedigital.co.nz</a>.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Pōneke Digital Ltd</div>
+    <div>Wellington, Aotearoa New Zealand</div>
+    <div><a href="mailto:info@ponekedigital.co.nz">info@ponekedigital.co.nz</a></div>
+  </footer>
+
+  <script>
+    // Handle Netlify form success redirect via query param
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === 'true') {
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('success-message').classList.add('visible');
+    }
+
+    // Also handle via JS fetch for a smoother experience (no page reload)
+    const form = document.getElementById('contact-form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = new URLSearchParams(new FormData(form));
+        try {
+          const res = await fetch('/', { method: 'POST', body: data });
+          if (res.ok) {
+            document.getElementById('form-area').style.display = 'none';
+            document.getElementById('success-message').classList.add('visible');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            form.submit(); // fallback to native submit
+          }
+        } catch {
+          form.submit(); // fallback if fetch fails
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
